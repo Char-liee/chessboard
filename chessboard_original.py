@@ -4,24 +4,43 @@ import pygame
 import sys
 from screeninfo import get_monitors
 
-# Creating Chessboard
-def create_chessboard(rows=5, cols=2, square_size=50, top_left_black=True, AS_pattern=None):
+# # Creating Chessboard
+# def create_chessboard(rows=5, cols=2, square_size=50, top_left_black=True, AS_pattern=None):
+#     if AS_pattern is not None:
+#         rows, cols = len(AS_pattern), len(AS_pattern[0])
+#         chessboard = np.ones((rows * square_size, cols * square_size), dtype=np.uint8) * 255
+#         for i in range(rows):
+#             for j in range(cols):
+#                 color = 0 if AS_pattern[i][j] == 0 else 255
+#                 chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
+#     else:
+#         chessboard = np.ones((rows * square_size, cols * square_size), dtype=np.uint8) * 255
+#         for i in range(rows):
+#             for j in range(cols):
+#                 if (i + j) % 2 == 0:
+#                     color = 0 if top_left_black else 255
+#                 else:
+#                     color = 255 if top_left_black else 0
+#                 chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
+#     return chessboard
+
+def create_chessboard(rows=5, cols=2, square_width=50, square_height=50, top_left_black=True, AS_pattern=None):
     if AS_pattern is not None:
         rows, cols = len(AS_pattern), len(AS_pattern[0])
-        chessboard = np.ones((rows * square_size, cols * square_size), dtype=np.uint8) * 255
+        chessboard = np.ones((rows * square_height, cols * square_width), dtype=np.uint8) * 255
         for i in range(rows):
             for j in range(cols):
                 color = 0 if AS_pattern[i][j] == 0 else 255
-                chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
+                chessboard[i * square_height:(i + 1) * square_height, j * square_width:(j + 1) * square_width] = color
     else:
-        chessboard = np.ones((rows * square_size, cols * square_size), dtype=np.uint8) * 255
+        chessboard = np.ones((rows * square_height, cols * square_width), dtype=np.uint8) * 255
         for i in range(rows):
             for j in range(cols):
                 if (i + j) % 2 == 0:
                     color = 0 if top_left_black else 255
                 else:
                     color = 255 if top_left_black else 0
-                chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
+                chessboard[i * square_height:(i + 1) * square_height, j * square_width:(j + 1) * square_width] = color
     return chessboard
 
 # Move Chessboard & Scaling
@@ -50,9 +69,9 @@ def main():
         screen_width = display_info.current_w
         screen_height = display_info.current_h
 
-    display_info = pygame.display.Info()
-    screen_width = display_info.current_w
-    screen_height = display_info.current_h
+    #display_info = pygame.display.Info()
+    #screen_width = display_info.current_w
+    #screen_height = display_info.current_h
     
     AS_pattern = [
         [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 1, 0],
@@ -74,17 +93,17 @@ def main():
         9: "AS y - 3"
     }
 
-    chessboard_hwasung_A = create_chessboard(rows=5, cols=2, square_size=199, top_left_black=False) # HwaSung Single A
-    chessboard_hwasung_B = create_chessboard(rows=5, cols=2, square_size=125, top_left_black=False) # HwaSung Single B
-    chessboard_hwasung_C = create_chessboard(rows=5, cols=2, square_size=199, top_left_black=False) # HwaSung Single C
-    chessboard_PDI_3_Single = create_chessboard(rows=5, cols=2, square_size=199, top_left_black=False) # PDI 3 Single
-    chessboard_PDI_2_Double_left = create_chessboard(rows=2, cols=3, square_size=100, top_left_black=True) # PDI 2 Double Left
-    chessboard_PDI_2_Double_right = create_chessboard(rows=2, cols=3, square_size=100, top_left_black=False) # PDI 2 Double Right
-    chessboard_AS = create_chessboard(AS_pattern=AS_pattern, square_size=62) # AS Original
-    chessboard_AS_xp3 = create_chessboard(AS_pattern=AS_pattern, square_size=62) # AS x + 3
-    chessboard_AS_xm3 = create_chessboard(AS_pattern=AS_pattern, square_size=62) # AS x - 3
-    chessboard_AS_yp3 = create_chessboard(AS_pattern=AS_pattern, square_size=62) # AS y + 3
-    chessboard_AS_ym3 = create_chessboard(AS_pattern=AS_pattern, square_size=62) # AS y - 3
+    chessboard_hwasung_A = create_chessboard(rows=5, cols=2, square_width=200, square_height=200, top_left_black=False) # HwaSung Single A
+    chessboard_hwasung_B = create_chessboard(rows=5, cols=2, square_width=125, square_height=125, top_left_black=False) # HwaSung Single B
+    chessboard_hwasung_C = create_chessboard(rows=5, cols=2, square_width=199, square_height=199, top_left_black=False) # HwaSung Single C
+    chessboard_PDI_3_Single = create_chessboard(rows=5, cols=2, square_width=199, square_height=199, top_left_black=False) # PDI 3 Single
+    chessboard_PDI_2_Double_left = create_chessboard(rows=2, cols=3, square_width=100, square_height=100, top_left_black=True) # PDI 2 Double Left
+    chessboard_PDI_2_Double_right = create_chessboard(rows=2, cols=3, square_width=100, square_height=100, top_left_black=False) # PDI 2 Double Right
+    chessboard_AS = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS Original
+    chessboard_AS_xp3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS x + 3
+    chessboard_AS_xm3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS x - 3
+    chessboard_AS_yp3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS y + 3
+    chessboard_AS_ym3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS y - 3
 
     screen = pygame.display.set_mode((screen_width, screen_height))
 
@@ -93,10 +112,13 @@ def main():
     scale = 1.0
     x_offset = (screen_width - chessboard_hwasung_A.shape[1]) // 2
     y_offset = (screen_height - chessboard_hwasung_A.shape[0]) // 2 - 427
+
     drawing = False
     start_pos = None
     alpha = 128  # Alpha value of Line within range of ( 0 ~ 255 )
     lines = []   # List of Line
+
+    apply_rotation = False
 
     while True:
         screen.fill((255, 255, 255))  # White Background
@@ -111,7 +133,7 @@ def main():
                     sys.exit()
 
         keys = pygame.key.get_pressed()
-        
+
         # Factory & Line Info
         if keys[pygame.K_0]: # HwaSung Single A
             mode = 0
