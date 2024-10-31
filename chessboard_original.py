@@ -34,22 +34,12 @@ def move_and_resize_image(image, x_offset, y_offset, scale, canvas_width, canvas
     canvas[y_start:y_start + h, x_start:x_start + w] = resized_image
     return canvas
 
-print("HI")
-
-# Drawing Line on ChessBoard >> Working on it
-def draw_transparent_line(surface, start_pos, end_pos, color, alpha):
-    temp_surface = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-    pygame.draw.line(temp_surface, (*color, alpha), start_pos, end_pos, 5)
-    surface.blit(temp_surface, (0, 0))
-
 def main():
     pygame.init()
     pygame.font.init()  # Init Font
     font = pygame.font.SysFont(None, 24)  # Init Font Size
 
     monitors = get_monitors()
-
-    """
     # Getting Monitor Info > extended Monitor Info
     if len(monitors) > 1:
         sub_monitor = monitors[1]
@@ -59,7 +49,6 @@ def main():
         display_info = pygame.display.Info()
         screen_width = display_info.current_w
         screen_height = display_info.current_h
-    """
 
     display_info = pygame.display.Info()
     screen_width = display_info.current_w
@@ -185,27 +174,6 @@ def main():
             x_offset = (screen_width - chessboard_AS.shape[1]) // 2
             y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
 
-        if False:
-            # Press d to start
-            if keys[pygame.K_d]:
-                mouse_pos = pygame.mouse.get_pos()
-
-                if not drawing:
-                    # initializing start_pos when mouse detect click event
-                    start_pos = mouse_pos
-                    drawing = True
-                else:
-                    end_pos = mouse_pos
-                    lines.append((start_pos, end_pos))  # Saving Lines
-                    start_pos = pygame.mouse.get_pos()
-
-                    drawing = False
-
-            # Press f to clear
-            if keys[pygame.K_f]:
-                lines.clear()
-                drawing = False  # Turn off Drawing Mode
-
         if mode == 0: # HwaSung Single A
             if keys[pygame.K_LEFT]:
                 x_offset += 1
@@ -276,7 +244,6 @@ def main():
             screen.blit(text_surface, (10, 10))  # Text Display on Top Left Corner
 
         elif mode == 3: # PDI 2 Double
-
             if keys[pygame.K_LEFT]:
                 x_offset += 1
             if keys[pygame.K_RIGHT]:
@@ -447,10 +414,6 @@ def main():
             mode_text = mode_names.get(mode, "Unknown Mode")  # Current Mode Name
             text_surface = font.render(f"{mode_text}", True, (0,0,0))  # Text Color = Black
             screen.blit(text_surface, (10, 10))  # Text Display on Top Left Corner
-            
-        if False:
-            for line in lines:
-                draw_transparent_line(screen, line[0], line[1], (255, 255, 255), alpha)
 
         # 화면 업데이트
         pygame.display.update()
