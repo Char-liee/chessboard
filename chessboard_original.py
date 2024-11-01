@@ -110,29 +110,29 @@ def main():
     ]
 
     mode_names = {
-        0: "HwaSung Single A",
-        1: "HwaSung Single B",
-        2: "HwaSung Single C",
-        3: "PDI 2 Double",
+        0: "HwaSung Single A", # 사이즈 완료, 높이 수정 필요 160
+        1: "HwaSung Single B", # 사이즈 완료, 높이 수정 필요 160
+        2: "HwaSung Single C", # 사이즈 완료, 높이 수정 필요 160
+        3: "PDI 2 Double", # 사이즈 완료, 높이 수정 필요 75
         4: "PDI 3 Single",
-        5: "AS Origninal",
-        6: "AS x + 3",
-        7: "AS x - 3",
-        8: "AS y + 3",
-        9: "AS y - 3"
+        5: "AS Origninal", # 완료 50
+        6: "AS x + 3", # 완료 50
+        7: "AS x - 3", # 완료 50
+        8: "AS y + 3", # 완료 50
+        9: "AS y - 3" # 완료 50
     }
 
-    chessboard_hwasung_A = create_chessboard(rows=5, cols=2, square_width=200, square_height=200, top_left_black=False) # HwaSung Single A
-    chessboard_hwasung_B = create_chessboard(rows=5, cols=2, square_width=125, square_height=125, top_left_black=False) # HwaSung Single B
-    chessboard_hwasung_C = create_chessboard(rows=5, cols=2, square_width=199, square_height=199, top_left_black=False) # HwaSung Single C
+    chessboard_hwasung_A = create_chessboard(rows=5, cols=2, square_width=199, square_height=201, top_left_black=False) # HwaSung Single A
+    chessboard_hwasung_B = create_chessboard(rows=5, cols=2, square_width=199, square_height=201, top_left_black=False) # HwaSung Single B
+    chessboard_hwasung_C = create_chessboard(rows=5, cols=2, square_width=199, square_height=201, top_left_black=False) # HwaSung Single C
     chessboard_PDI_3_Single = create_chessboard(rows=5, cols=2, square_width=199, square_height=199, top_left_black=False) # PDI 3 Single
-    chessboard_PDI_2_Double_left = create_chessboard(rows=2, cols=3, square_width=100, square_height=100, top_left_black=True) # PDI 2 Double Left
-    chessboard_PDI_2_Double_right = create_chessboard(rows=2, cols=3, square_width=100, square_height=100, top_left_black=False) # PDI 2 Double Right
-    chessboard_AS = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS Original
-    chessboard_AS_xp3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS x + 3
-    chessboard_AS_xm3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS x - 3
-    chessboard_AS_yp3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS y + 3
-    chessboard_AS_ym3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=62) # AS y - 3
+    chessboard_PDI_2_Double_left = create_chessboard(rows=2, cols=3, square_width=94, square_height=93, top_left_black=True) # PDI 2 Double Left
+    chessboard_PDI_2_Double_right = create_chessboard(rows=2, cols=3, square_width=94, square_height=93, top_left_black=False) # PDI 2 Double Right
+    chessboard_AS = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=63) # AS Original
+    chessboard_AS_xp3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=63) # AS x + 3
+    chessboard_AS_xm3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=63) # AS x - 3
+    chessboard_AS_yp3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=63) # AS y + 3
+    chessboard_AS_ym3 = create_chessboard(AS_pattern=AS_pattern, square_width=62, square_height=63) # AS y - 3
 
     screen = pygame.display.set_mode((screen_width, screen_height))
 
@@ -185,7 +185,7 @@ def main():
             scale = 1.0
             x_offset = (screen_width // 2 - chessboard_PDI_2_Double_left.shape[1]) // 2
             y_offset = (screen_height - chessboard_PDI_2_Double_right.shape[0]) // 8 
-            board_gap = -18
+            board_gap = -208
 
         if keys[pygame.K_4]: # PDI 3 Single
             mode = 4
@@ -197,31 +197,32 @@ def main():
             mode = 5
             scale = 1.0
             x_offset = (screen_width - chessboard_AS.shape[1]) // 2
-            y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
+            y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 165
 
         if keys[pygame.K_6]: # AS x + 3
             mode = 6
             scale = 1.0
-            x_offset = (screen_width - chessboard_AS.shape[1]) // 2
-            y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
+            x_offset = (screen_width - chessboard_AS_xp3.shape[1]) // 2 + 37
+            y_offset = (screen_height - chessboard_AS_xp3.shape[0]) // 2 - 165
 
         if keys[pygame.K_7]: # AS x - 3
             mode = 7
             scale = 1.0
-            x_offset = (screen_width - chessboard_AS.shape[1]) // 2
-            y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
+            x_offset = (screen_width - chessboard_AS_xm3.shape[1]) // 2 - 37
+            y_offset = (screen_height - chessboard_AS_xm3.shape[0]) // 2 - 165
 
         if keys[pygame.K_8]: # AS y + 3
             mode = 8
             scale = 1.0
-            x_offset = (screen_width - chessboard_AS.shape[1]) // 2
-            y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
+            x_offset = (screen_width - chessboard_AS_yp3.shape[1]) // 2
+            y_offset = (screen_height - chessboard_AS_yp3.shape[0]) // 2 - 165 - 38
+
 
         if keys[pygame.K_9]: # AS y - 3
             mode = 9
             scale = 1.0
-            x_offset = (screen_width - chessboard_AS.shape[1]) // 2
-            y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
+            x_offset = (screen_width - chessboard_AS_ym3.shape[1]) // 2
+            y_offset = (screen_height - chessboard_AS_ym3.shape[0]) // 2 - 165 + 38
 
         # Mode Event
         if mode == 0: # HwaSung Single A
