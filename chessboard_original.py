@@ -4,7 +4,39 @@ import pygame
 import sys
 from screeninfo import get_monitors
 
-# # Creating Chessboard
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                             User Guide                            #
+#  Version : Check Git History                                      #
+#  Made By : Jongho                                                 #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                   #
+#  Number = Pattern                                                 #
+#                                                                   #
+#  0 : "HwaSung Single A",                                          #
+#  1 : "HwaSung Single B",                                          #
+#  2 : "HwaSung Single C",                                          #
+#  3 : "PDI 2 Double",                                              #
+#  4 : "PDI 3 Single",                                              #
+#  5 : "AS Origninal",                                              #
+#  6 : "AS x + 3",                                                  #
+#  7 : "AS x - 3",                                                  #
+#  8 : "AS y + 3",                                                  #
+#  9 : "AS y - 3"                                                   #
+#                                                                   #
+#  + : Zoom In                                                      #
+#  - : Zoom Out                                                     #
+#                                                                   #
+#  Moving Pattern : Key_Left, Key_Right, Key_Up, Key_DOwn           #
+#                                                                   #
+#  Border Gap : Space Between Left ChessBoard & Right ChessBoard    #
+#                                                                   #
+#  ChessBoard Width, ChessBoard Height : Due to Display resolution, #
+#  Square != exact Square. Need to adjust Width and Height manualy. #
+#                                                                   #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Creating ChessBoard, Height = Width = square_size
+#
 # def create_chessboard(rows=5, cols=2, square_size=50, top_left_black=True, AS_pattern=None):
 #     if AS_pattern is not None:
 #         rows, cols = len(AS_pattern), len(AS_pattern[0])
@@ -24,6 +56,7 @@ from screeninfo import get_monitors
 #                 chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
 #     return chessboard
 
+# Creating ChessBoard, Custom Height & Width 
 def create_chessboard(rows=5, cols=2, square_width=50, square_height=50, top_left_black=True, AS_pattern=None):
     if AS_pattern is not None:
         rows, cols = len(AS_pattern), len(AS_pattern[0])
@@ -56,7 +89,7 @@ def move_and_resize_image(image, x_offset, y_offset, scale, canvas_width, canvas
 def main():
     pygame.init()
     pygame.font.init()  # Init Font
-    font = pygame.font.SysFont(None, 24)  # Init Font Size
+    font = pygame.font.SysFont(None, 40)  # Init Font Size
 
     monitors = get_monitors()
     # Getting Monitor Info > extended Monitor Info
@@ -69,10 +102,6 @@ def main():
         screen_width = display_info.current_w
         screen_height = display_info.current_h
 
-    #display_info = pygame.display.Info()
-    #screen_width = display_info.current_w
-    #screen_height = display_info.current_h
-    
     AS_pattern = [
         [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 1, 0],
         [1, 1, 0, 0], [1, 0, 1, 0], [1, 1, 0, 0], [1, 0, 1, 0], [1, 1, 0, 0],
@@ -107,7 +136,7 @@ def main():
 
     screen = pygame.display.set_mode((screen_width, screen_height))
 
-    # initial value
+    # Initial value
     mode = 0
     scale = 1.0
     x_offset = (screen_width - chessboard_hwasung_A.shape[1]) // 2
@@ -117,8 +146,6 @@ def main():
     start_pos = None
     alpha = 128  # Alpha value of Line within range of ( 0 ~ 255 )
     lines = []   # List of Line
-
-    apply_rotation = False
 
     while True:
         screen.fill((255, 255, 255))  # White Background
@@ -134,7 +161,7 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        # Factory & Line Info
+        # Factory & Line Info with key event
         if keys[pygame.K_0]: # HwaSung Single A
             mode = 0
             scale = 1.0
@@ -196,6 +223,7 @@ def main():
             x_offset = (screen_width - chessboard_AS.shape[1]) // 2
             y_offset = (screen_height - chessboard_AS.shape[0]) // 2 - 177
 
+        # Mode Event
         if mode == 0: # HwaSung Single A
             if keys[pygame.K_LEFT]:
                 x_offset += 1
@@ -441,4 +469,4 @@ def main():
         pygame.display.update()
 
 if __name__ == "__main__":
-    main()  
+    main()
