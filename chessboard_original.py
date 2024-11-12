@@ -3,6 +3,11 @@ import numpy as np
 import pygame
 import sys
 from screeninfo import get_monitors
+from PIL import ImageGrab, Image
+import os
+import datetime
+import Quartz
+import Quartz.CoreGraphics as CG
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                             User Guide                            #
@@ -26,7 +31,9 @@ from screeninfo import get_monitors
 #  + : Zoom In                                                      #
 #  - : Zoom Out                                                     #
 #                                                                   #
-#  Moving Pattern : Key_Left, Key_Right, Key_Up, Key_DOwn           #
+#  Moving Pattern : Key_Left, Key_Right, Key_Up, Key_Down           #
+#                                                                   #
+#  ScreenShot : Key_SpaceBar                                        #
 #                                                                   #
 #  Border Gap : Space Between Left ChessBoard & Right ChessBoard    #
 #                                                                   #
@@ -55,6 +62,22 @@ from screeninfo import get_monitors
 #                     color = 255 if top_left_black else 0
 #                 chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
 #     return chessboard
+
+# Global Variable
+mode_names = {
+    0: "HwaSung Single A", # Size Done, Height needs to be adjust 160
+    1: "HwaSung Single B", # Size Done, Height needs to be adjust 160
+    2: "HwaSung Single C", # Size Done, Height needs to be adjust 160
+    3: "PDI 2 Double", # Size Done, Height needs to be adjust 75
+    4: "PDI 3 Single", # Need to start Size and Height
+    5: "AS Origninal", # Done 50
+    6: "AS x + 3", # Done 50
+    7: "AS x - 3", # Done 50
+    8: "AS y + 3", # Done 50
+    9: "AS y - 3" # Done 50
+}
+
+Folder_flag = [False]
 
 # Creating ChessBoard, Custom Height & Width 
 def create_chessboard(rows=5, cols=2, square_width=50, square_height=50, top_left_black=True, AS_pattern=None):
@@ -86,6 +109,25 @@ def move_and_resize_image(image, x_offset, y_offset, scale, canvas_width, canvas
     canvas[y_start:y_start + h, x_start:x_start + w] = resized_image
     return canvas
 
+# ScreenShot Added # 11_12_24 - jongho
+def screenshot(current_mode, flag):
+    i = 1
+    if flag[0] == False:
+        flag[0] = True
+        global making_folder_dir 
+        making_folder_dir = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') 
+        os.makedirs(making_folder_dir)
+        
+        current_dir = os.getcwd()
+        os.chdir(f"{current_dir}/{making_folder_dir}")
+
+    while os.path.exists(f"{mode_names[current_mode]}_{i}.png"):
+        i += 1
+    img = ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True)
+    img.save(f"{mode_names[current_mode]}_{i}.png")
+    print(f"Saved {mode_names[current_mode]}_{i}.png")
+
+# Main Start
 def main():
     pygame.init()
     pygame.font.init()  # Init Font
@@ -109,19 +151,6 @@ def main():
         [1, 1, 0, 0], [1, 0, 1, 0], [1, 1, 0, 0]
     ]
 
-    mode_names = {
-        0: "HwaSung Single A", # 사이즈 완료, 높이 수정 필요 160
-        1: "HwaSung Single B", # 사이즈 완료, 높이 수정 필요 160
-        2: "HwaSung Single C", # 사이즈 완료, 높이 수정 필요 160
-        3: "PDI 2 Double", # 사이즈 완료, 높이 수정 필요 75
-        4: "PDI 3 Single",
-        5: "AS Origninal", # 완료 50
-        6: "AS x + 3", # 완료 50
-        7: "AS x - 3", # 완료 50
-        8: "AS y + 3", # 완료 50
-        9: "AS y - 3" # 완료 50
-    }
-
     chessboard_hwasung_A = create_chessboard(rows=5, cols=2, square_width=199, square_height=201, top_left_black=False) # HwaSung Single A
     chessboard_hwasung_B = create_chessboard(rows=5, cols=2, square_width=199, square_height=201, top_left_black=False) # HwaSung Single B
     chessboard_hwasung_C = create_chessboard(rows=5, cols=2, square_width=199, square_height=201, top_left_black=False) # HwaSung Single C
@@ -142,11 +171,6 @@ def main():
     x_offset = (screen_width - chessboard_hwasung_A.shape[1]) // 2
     y_offset = (screen_height - chessboard_hwasung_A.shape[0]) // 2 - 427
 
-    drawing = False
-    start_pos = None
-    alpha = 128  # Alpha value of Line within range of ( 0 ~ 255 )
-    lines = []   # List of Line
-
     while True:
         screen.fill((255, 255, 255))  # White Background
         for event in pygame.event.get():
@@ -160,7 +184,7 @@ def main():
                     sys.exit()
 
         keys = pygame.key.get_pressed()
-
+        
         # Factory & Line Info with key event
         if keys[pygame.K_0]: # HwaSung Single A
             mode = 0
@@ -217,7 +241,6 @@ def main():
             x_offset = (screen_width - chessboard_AS_yp3.shape[1]) // 2
             y_offset = (screen_height - chessboard_AS_yp3.shape[0]) // 2 - 165 - 38
 
-
         if keys[pygame.K_9]: # AS y - 3
             mode = 9
             scale = 1.0
@@ -238,6 +261,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_hwasung_A = move_and_resize_image(chessboard_hwasung_A, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_hwasung_A = cv2.cvtColor(moved_image_hwasung_A, cv2.COLOR_GRAY2RGB)
@@ -261,11 +286,13 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_hwasung_B = move_and_resize_image(chessboard_hwasung_B, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_hwasung_B = cv2.cvtColor(moved_image_hwasung_B, cv2.COLOR_GRAY2RGB)
             moved_image_surface_hwasung_B = pygame.surfarray.make_surface(np.rot90(moved_image_rgb_hwasung_B))
-            screen.blit(moved_image_surface_hwasung_B, (0, 0))    
+            screen.blit(moved_image_surface_hwasung_B, (0, 0))
 
             mode_text = mode_names.get(mode, "Unknown Mode")  # Current Mode Name
             text_surface = font.render(f"{mode_text}", True, (0,0,0))  # Text Color = Black
@@ -284,6 +311,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_hwasung_C = move_and_resize_image(chessboard_hwasung_C, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_hwasung_C = cv2.cvtColor(moved_image_hwasung_C, cv2.COLOR_GRAY2RGB)
@@ -310,7 +339,9 @@ def main():
             if keys[pygame.K_o]:  # Increase DIstance between Inner Chess Board
                 board_gap += 1
             if keys[pygame.K_p]:  # Decrease DIstance between Inner Chess Board
-                board_gap -= 1    
+                board_gap -= 1
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)    
 
             # Left Chessboard
             moved_image_PDI_2_Double_left = move_and_resize_image(chessboard_PDI_2_Double_left, x_offset - board_gap, y_offset, scale, screen_width // 2, screen_height)
@@ -341,6 +372,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_PDI_3_Single = move_and_resize_image(chessboard_PDI_3_Single, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_PDI_3_Single = cv2.cvtColor(moved_image_PDI_3_Single, cv2.COLOR_GRAY2RGB)
@@ -364,6 +397,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_AS = move_and_resize_image(chessboard_AS, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_AS = cv2.cvtColor(moved_image_AS, cv2.COLOR_GRAY2RGB)
@@ -387,6 +422,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_AS_xp3 = move_and_resize_image(chessboard_AS_xp3, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_AS_xp3 = cv2.cvtColor(moved_image_AS_xp3, cv2.COLOR_GRAY2RGB)
@@ -410,6 +447,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_AS_xm3 = move_and_resize_image(chessboard_AS_xm3, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_AS_xm3 = cv2.cvtColor(moved_image_AS_xm3, cv2.COLOR_GRAY2RGB)
@@ -433,6 +472,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
                 
             moved_image_AS_yp3 = move_and_resize_image(chessboard_AS_yp3, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_AS_yp3 = cv2.cvtColor(moved_image_AS_yp3, cv2.COLOR_GRAY2RGB)
@@ -456,6 +497,8 @@ def main():
                 scale += 0.001
             if keys[pygame.K_MINUS]:  # '-' = Smaller Size
                 scale -= 0.001
+            if keys[pygame.K_SPACE]:
+                screenshot(mode,Folder_flag)
 
             moved_image_AS_ym3 = move_and_resize_image(chessboard_AS_ym3, x_offset, y_offset, scale, screen_width, screen_height)
             moved_image_rgb_AS_ym3 = cv2.cvtColor(moved_image_AS_ym3, cv2.COLOR_GRAY2RGB)
@@ -466,7 +509,7 @@ def main():
             text_surface = font.render(f"{mode_text}", True, (0,0,0))  # Text Color = Black
             screen.blit(text_surface, (10, 10))  # Text Display on Top Left Corner
 
-        # 화면 업데이트
+        # Updating Screen
         pygame.display.update()
 
 if __name__ == "__main__":
