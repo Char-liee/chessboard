@@ -1,13 +1,3 @@
-import cv2
-import numpy as np
-import pygame
-import sys
-from screeninfo import get_monitors
-from PIL import ImageGrab, Image
-import os
-import datetime
-import Quartz
-import Quartz.CoreGraphics as CG
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                             User Guide                            #
@@ -33,35 +23,33 @@ import Quartz.CoreGraphics as CG
 #                                                                   #
 #  Moving Pattern : Key_Left, Key_Right, Key_Up, Key_Down           #
 #                                                                   #
-#  ScreenShot : Key_SpaceBar                                        #
-#                                                                   #
-#  Border Gap : Space Between Left ChessBoard & Right ChessBoard    #
+#  Board Gap : Space Between Left ChessBoard & Right ChessBoard,    #
+#  Small Value or Negative = Farther, Vice Versa                    #
 #                                                                   #
 #  ChessBoard Width, ChessBoard Height : Due to Display resolution, #
 #  Square != exact Square. Need to adjust Width and Height manualy. #
 #                                                                   #
+#  ScreenShot : Key_SpaceBar                                        #
+#                                                                   #
+#  [Requirments]                                                    #
+#  1.  Need to make External display to main,                       #
+#      in order to use ScreenShot Function.                         #
+#  2.  In Window OS make sure your resolution match 2.1 requirments #
+#  2.1 Resolution = 1920 * 1080, Scaling = 300%                     #       
+#  3.  Might not work when there are only One Display               #
+#  4.  Does not work in Ubuntu OS, there are no XServer.            #
+#  5.  Need to run the program on the "Main Display"                #
+#                                                                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# Creating ChessBoard, Height = Width = square_size
-#
-# def create_chessboard(rows=5, cols=2, square_size=50, top_left_black=True, AS_pattern=None):
-#     if AS_pattern is not None:
-#         rows, cols = len(AS_pattern), len(AS_pattern[0])
-#         chessboard = np.ones((rows * square_size, cols * square_size), dtype=np.uint8) * 255
-#         for i in range(rows):
-#             for j in range(cols):
-#                 color = 0 if AS_pattern[i][j] == 0 else 255
-#                 chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
-#     else:
-#         chessboard = np.ones((rows * square_size, cols * square_size), dtype=np.uint8) * 255
-#         for i in range(rows):
-#             for j in range(cols):
-#                 if (i + j) % 2 == 0:
-#                     color = 0 if top_left_black else 255
-#                 else:
-#                     color = 255 if top_left_black else 0
-#                 chessboard[i * square_size:(i + 1) * square_size, j * square_size:(j + 1) * square_size] = color
-#     return chessboard
+import cv2
+import numpy as np
+import pygame
+import sys
+from screeninfo import get_monitors
+from PIL import ImageGrab
+import os
+import datetime
 
 # Global Variable
 mode_names = {
@@ -123,7 +111,7 @@ def screenshot(current_mode, flag):
 
     while os.path.exists(f"{mode_names[current_mode]}_{i}.png"):
         i += 1
-    img = ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=True)
+    img = ImageGrab.grab(bbox=None, include_layered_windows=False, all_screens=False)
     img.save(f"{mode_names[current_mode]}_{i}.png")
     print(f"Saved {mode_names[current_mode]}_{i}.png")
 
